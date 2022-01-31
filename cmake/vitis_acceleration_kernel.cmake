@@ -294,9 +294,6 @@ macro(vitis_acceleration_kernel_aux)
       # extract the raw bitstream
       run("xclbinutil --dump-section BITSTREAM:RAW:${VITIS_KERNEL_AUX_NAME}.bit.bin \
           --input ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.xclbin --force")
-      # create
-      run("cp ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo \
-              ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo")
 
       # install
       if (EXISTS ${CMAKE_BINARY_DIR}/${BINARY_NAME})
@@ -304,11 +301,25 @@ macro(vitis_acceleration_kernel_aux)
         install(
           FILES
             "${CMAKE_BINARY_DIR}/${BINARY_NAME}"
-            "${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo"
             "${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.bit.bin"
           DESTINATION
             lib/${PROJECT_NAME}
         )
+
+        # install dtbo if it available
+        set(DEFAULT_DTBO ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo)
+        if ( EXISTS  ${DEFAULT_DTBO})
+          # copy to build directory and then install
+          # we could use install rename directly, alternatively 
+          run("cp ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo \
+                  ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo")
+          install(
+            FILES
+              "${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo"
+            DESTINATION
+              lib/${PROJECT_NAME}
+          )
+        endif()
 
         # package installation
         if (${VITIS_KERNEL_AUX_PACKAGE})
