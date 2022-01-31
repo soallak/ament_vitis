@@ -211,11 +211,14 @@ macro(vitis_acceleration_kernel_aux)
             -o "${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.xo"
         RESULT_VARIABLE
             CMD_ERROR
+        OUTPUT_VARIABLE OUTPUT_VAR
+        ERROR_VARIABLE ERROR_VAR
+        COMMAND_ECHO STDOUT
       )
     else()
       execute_process(
         COMMAND
-          ${VPP_PATH} -c --hls.clock ${VITIS_KERNEL_AUX_CLOCK} -t ${VITIS_KERNEL_AUX_TYPE}
+        ${VPP_PATH} -c --hls.clock ${VITIS_KERNEL_AUX_CLOCK}:${VITIS_KERNEL_AUX_NAME} -t ${VITIS_KERNEL_AUX_TYPE}
             --config "${CMAKE_SOURCE_DIR}/${VITIS_KERNEL_AUX_CONFIG}"
             -k ${VITIS_KERNEL_AUX_NAME}
             ${INCLUDE_DIRS}
@@ -223,10 +226,17 @@ macro(vitis_acceleration_kernel_aux)
             -o "${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.xo"
         RESULT_VARIABLE
             CMD_ERROR
+        OUTPUT_VARIABLE OUTPUT_VAR
+        ERROR_VARIABLE ERROR_VAR
+        COMMAND_ECHO STDOUT
       )
-      # message("${VITIS_KERNEL_AUX_CLOCK}")  # debug
     endif()
-    message(STATUS "CMD_ERROR: " ${CMD_ERROR})
+    if(NOT (${CMD_ERROR} EQUAL 0))
+      message(ERROR ${OUTPUT_VAR})
+      message(FATAL_ERROR "Vitis compiliation failed")
+    else()
+      message(${OUTPUT_VAR})
+    endif()
 
     # adjust final binary name if not "hw" (only "hw" build target is without suffix)
     set(BINARY_NAME "${VITIS_KERNEL_AUX_NAME}.xclbin")
