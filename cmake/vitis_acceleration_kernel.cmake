@@ -307,18 +307,19 @@ macro(vitis_acceleration_kernel_aux)
         )
 
         # install dtbo if it available
-        set(DEFAULT_DTBO ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo)
+        set(DEFAULT_DTBO ${FIRMWARE_DEVICE_TREE}/kernel_default.dtbo)
         if ( EXISTS  ${DEFAULT_DTBO})
           # copy to build directory and then install
           # we could use install rename directly, alternatively 
-          run("cp ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo \
-                  ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo")
+          run("cp ${DEFAULT_DTBO} ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo")
           install(
             FILES
               "${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo"
             DESTINATION
               lib/${PROJECT_NAME}
           )
+        else()
+          message(WARNING "Default DTBO ${DEFAULT_DTBO} not found")
         endif()
 
         # package installation
