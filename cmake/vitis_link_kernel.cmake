@@ -84,7 +84,7 @@ macro(vitis_link_kernel)
           run("cp ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo \
                         ${CMAKE_BINARY_DIR}/${VITIS_LINK_OUTPUT}.dtbo")
         else()
-          run("dtc -I dts -O dtb -o ${CMAKE_BINARY_DIR}/${VITIS_LINK_OUTPUT}.dtbo \
+          run("dtc -@ -I dts -O dtb -o ${CMAKE_BINARY_DIR}/${VITIS_LINK_OUTPUT}.dtbo \
                         ${CMAKE_SOURCE_DIR}/${VITIS_LINK_DTSI}")
         endif() # dtbo generation - or copy
         # copy default shell.json if non-existing at
