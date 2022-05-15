@@ -225,7 +225,7 @@ macro(vitis_acceleration_kernel_aux)
 
   # Use config file provided or default one
   if("${VITIS_KERNEL_AUX_CONFIG}" STREQUAL "")
-    set(VITIS_CONFIGURATION_FILE "${FIRMWARE_DATA}/../platform.cfg")
+    set(VITIS_CONFIGURATION_FILE "${FIRMWARE_DIR}/platform.cfg")
   else()
     set(VITIS_CONFIGURATION_FILE
         "${CMAKE_SOURCE_DIR}/${VITIS_KERNEL_AUX_CONFIG}")
@@ -351,7 +351,7 @@ macro(vitis_acceleration_kernel_aux)
       # # 2020.2 # extract the raw bitstream run("xclbinutil --dump-section
       # BITSTREAM:RAW:${VITIS_KERNEL_AUX_NAME}.bit.bin \ --input
       # ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.xclbin --force") # create
-      # run("cp ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo \
+      # run("cp ${FIRMWARE_DIR}/device_tree/kernel_default.dtbo \
       # ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo")
 
       # 2021.2 extract the raw bitstream
@@ -369,7 +369,7 @@ macro(vitis_acceleration_kernel_aux)
 
       # generate or copy default dtbo
       if("${VITIS_KERNEL_AUX_DTSI}" STREQUAL "")
-        run("cp ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo \
+        run("cp ${FIRMWARE_DIR}/device_tree/kernel_default.dtbo \
               ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo")
       else()
         run("dtc -I dts -O dtb -o ${CMAKE_BINARY_DIR}/${VITIS_KERNEL_AUX_NAME}.dtbo \
@@ -383,7 +383,7 @@ macro(vitis_acceleration_kernel_aux)
       # '\"'XRT_FLAT'\"',\n\t'\"'num_slots'\"' : '\"'1'\"'\n}\n' >
       # ${CMAKE_BINARY_DIR}/shell.json")  # bad, uses ', instead of "
       if("${VITIS_KERNEL_AUX_SHELLJSON}" STREQUAL "")
-        run("cp ${FIRMWARE_DATA}/../shell.json \
+        run("cp ${FIRMWARE_DIR}/shell.json \
               ${CMAKE_BINARY_DIR}/shell.json")
       endif() # shell.json
 
@@ -409,12 +409,12 @@ macro(vitis_acceleration_kernel_aux)
             # compounded way. Not ideal. See below for an alternative that
             # checks
             #
-            # execute_process( COMMAND mkdir ${FIRMWARE_DATA}/../emulation )
+            # execute_process( COMMAND mkdir ${FIRMWARE_DIR}/emulation )
             # execute_process( COMMAND ln -s ${CMAKE_BINARY_DIR}/package/sim
-            # ${FIRMWARE_DATA}/../emulation/sim )
+            # ${FIRMWARE_DIR}/emulation/sim )
 
-            set(EMULATIONSIMDIR "test -e ${FIRMWARE_DATA}/../emulation/sim || ")
-            run("${EMULATIONSIMDIR} ln -s ${CMAKE_BINARY_DIR}/package/sim ${FIRMWARE_DATA}/../emulation/sim"
+            set(EMULATIONSIMDIR "test -e ${FIRMWARE_DIR}/emulation/sim || ")
+            run("${EMULATIONSIMDIR} ln -s ${CMAKE_BINARY_DIR}/package/sim ${FIRMWARE_DIR}/emulation/sim"
             )
           endif() # hw_emu
 
@@ -424,21 +424,21 @@ macro(vitis_acceleration_kernel_aux)
           #
           if(${VITIS_KERNEL_AUX_TYPE} STREQUAL "hw")
             # if symlink exists, delete
-            run("[ -L ${FIRMWARE_DATA}/../BOOT.BIN ] && unlink ${FIRMWARE_DATA}/../BOOT.BIN"
+            run("[ -L ${FIRMWARE_DIR}/BOOT.BIN ] && unlink ${FIRMWARE_DIR}/BOOT.BIN"
             )
-            # set(EMULATIONSIMDIR "test -e ${FIRMWARE_DATA}/../BOOT.BIN || ")
-            # set(EMULATIONSIMDIR "[ -L ${FIRMWARE_DATA}/../BOOT.BIN ] && [ -e
-            # ${FIRMWARE_DATA}/../BOOT.BIN ]  && ")
+            # set(EMULATIONSIMDIR "test -e ${FIRMWARE_DIR}/BOOT.BIN || ")
+            # set(EMULATIONSIMDIR "[ -L ${FIRMWARE_DIR}/BOOT.BIN ] && [ -e
+            # ${FIRMWARE_DIR}/BOOT.BIN ]  && ")
 
             # create the new symlink
-            run("ln -s ${CMAKE_BINARY_DIR}/package/BOOT.BIN ${FIRMWARE_DATA}/../BOOT.BIN"
+            run("ln -s ${CMAKE_BINARY_DIR}/package/BOOT.BIN ${FIRMWARE_DIR}/BOOT.BIN"
             )
           endif() # hw_emu
         endif() # package installation
 
         # if sw_emu, deploy "data" from firmware
         if(${VITIS_KERNEL_AUX_TYPE} STREQUAL "sw_emu")
-          install(DIRECTORY "${FIRMWARE_DATA}" DESTINATION lib/${PROJECT_NAME})
+          install(DIRECTORY "${FIRMWARE_DATA_DIR}" DESTINATION lib/${PROJECT_NAME})
         endif() # sw_emu
       endif() # install
 

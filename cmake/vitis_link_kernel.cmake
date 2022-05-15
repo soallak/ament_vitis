@@ -81,7 +81,7 @@ macro(vitis_link_kernel)
         )
         # generate or copy default dtbo
         if("${VITIS_LINK_DTSI}" STREQUAL "")
-          run("cp ${FIRMWARE_DATA}/../device_tree/kernel_default.dtbo \
+          run("cp ${FIRMWARE_DIR}/device_tree/kernel_default.dtbo \
                         ${CMAKE_BINARY_DIR}/${VITIS_LINK_OUTPUT}.dtbo")
         else()
           run("dtc -@ -I dts -O dtb -o ${CMAKE_BINARY_DIR}/${VITIS_LINK_OUTPUT}.dtbo \
@@ -91,7 +91,7 @@ macro(vitis_link_kernel)
         # ${CMAKE_BINARY_DIR}/shell.json TODO: optionally pass a different
         # shell.json as an argument
         if("${VITIS_KERNEL_AUX_SHELLJSON}" STREQUAL "")
-          run("cp ${FIRMWARE_DATA}/../shell.json \
+          run("cp ${FIRMWARE_DIR}/shell.json \
                         ${CMAKE_BINARY_DIR}/shell.json")
         endif() # shell.json
 
